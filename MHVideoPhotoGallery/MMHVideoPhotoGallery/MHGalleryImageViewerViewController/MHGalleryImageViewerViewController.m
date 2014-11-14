@@ -11,6 +11,7 @@
 #import "MHTransitionShowShareView.h"
 #import "MHTransitionShowOverView.h"
 #import "MHGallerySharedManagerPrivate.h"
+#import "MHURLGalleryItem.h"
 
 @implementation MHPinchGestureRecognizer
 @end
@@ -877,18 +878,16 @@
                 [weakSelf.act stopAnimating];
             }];
             
-        }else{
-            [MHGallerySharedManager.sharedManager startDownloadingThumbImage:self.item.URLString
-                                                                successBlock:^(UIImage *image,NSUInteger videoDuration,NSError *error) {
-                                                                    if (!error) {
-                                                                        [weakSelf handleGeneratedThumb:image
-                                                                                         videoDuration:videoDuration
-                                                                                             urlString:self.item.URLString];
-                                                                    }else{
-                                                                        [weakSelf changeToErrorImage];
-                                                                    }
-                                                                    [weakSelf.act stopAnimating];
-                                                                }];
+        } else {
+            [self.item loadImageWithType:MHImageTypeThumb completionHandler:^(UIImage *image, NSError *errorOrNil) {
+                if (errorOrNil == nil) {
+                    [weakSelf handleGeneratedThumb:image
+                                     videoDuration:weakSelf.item.videoDuration];
+                } else {
+                    [weakSelf changeToErrorImage];
+                }
+                [weakSelf.act stopAnimating];
+            }];
         }
     }
     
@@ -924,7 +923,9 @@
             [weakSelf autoPlayVideo];
             return;
         }
-        [[MHGallerySharedManager sharedManager] getURLForMediaPlayer:self.item.URLString successBlock:^(NSURL *URL, NSError *error) {
+        MHURLGalleryItem *urlItem = (id)self.item;
+        NSAssert([urlItem isKindOfClass:MHURLGalleryItem.class], @"Only URL items are supported");
+        [[MHGallerySharedManager sharedManager] getURLForMediaPlayer:urlItem.url.absoluteString successBlock:^(NSURL *URL, NSError *error) {
             if (error || URL == nil) {
                 [weakSelf changePlayButtonToUnPlay];
             }else{
@@ -944,8 +945,7 @@
 
 
 -(void)handleGeneratedThumb:(UIImage*)image
-              videoDuration:(NSInteger)videoDuration
-                  urlString:(NSString*)urlString{
+              videoDuration:(NSInteger)videoDuration {
     
     self.wholeTimeMovie = videoDuration;
     self.rightSliderLabel.text = [MHGallerySharedManager stringForMinutesAndSeconds:videoDuration addMinus:YES];

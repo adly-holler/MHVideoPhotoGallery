@@ -14,59 +14,32 @@ typedef NS_ENUM(NSUInteger, MHGalleryType) {
     MHGalleryTypeVideo
 };
 
+typedef void(^MHGalleryItemLoadImageCompletionHandler)(UIImage *image, NSError *errorOrNil);
+typedef void(^MHGalleryItemLoadVideoCompletionHandler)(AVPlayerItem *playerItem, NSError *errorOrNil);
+
 @interface MHGalleryItem : NSObject
 
-@property (nonatomic,strong) UIImage            *image;
-@property (nonatomic,strong) NSString           *URLString;
+// default is YES
++ (BOOL)registrationEnabled;
++ (void)setRegistrationEnabled:(BOOL)enabled;
+// if registration is enabled, and an item with the given identifier exists, that item is returned rather than a new one
+// this is the only acceptable method to create a gallery item
++ (instancetype)itemWithIdentifier:(NSString *)identifier type:(MHGalleryType)galleryType context:(NSString *)context;
+
+@property (nonatomic, copy, readonly) NSString *identifier;
+
+// Subclasses should implement this. Default impl calls "loadImage" block.
+- (void)loadImageWithType:(MHImageType)imageType completionHandler:(MHGalleryItemLoadImageCompletionHandler)completionHandler;
+- (void)loadVideoWithCompletionHandler:(MHGalleryItemLoadVideoCompletionHandler)completionHandler;
+
 /**
  *  Thumbs are automatically generated for Videos. But you can set Thumb Images for GalleryTypeImage.
  */
-@property (nonatomic,strong) NSString           *thumbnailURL;
-@property (nonatomic,strong) NSString           *descriptionString;
-@property (nonatomic,strong) NSAttributedString *attributedString;
-@property (nonatomic,assign) MHGalleryType       galleryType;
-/**
- *  MHGalleryItem initWithURL:galleryType
- *
- *  @param urlString   the URL of the image or Video as a String
- *  @param galleryType select to Type, video or image
- *
- */
+@property (nonatomic, strong) NSString           *descriptionString;
+@property (nonatomic, strong) NSAttributedString *attributedString;
+@property (nonatomic, readonly) MHGalleryType       galleryType;
 
-- (instancetype)initWithURL:(NSString*)URLString
-               thumbnailURL:(NSString*)thumbnailURL;
-
-+ (instancetype)itemWithURL:(NSString *)URLString
-               thumbnailURL:(NSString*)thumbnailURL;
-
-- (instancetype)initWithURL:(NSString*)URLString
-                galleryType:(MHGalleryType)galleryType;
-
-+ (instancetype)itemWithURL:(NSString*)URLString
-                galleryType:(MHGalleryType)galleryType;
-
-/**
- *  MHGalleryItem itemWithYoutubeVideoID:
- *
- *  @param ID  Example: http://www.youtube.com/watch?v=YSdJtNen-EA - YSdJtNen-EA is the ID
- *
- */
-+ (instancetype)itemWithYoutubeVideoID:(NSString*)ID;
-/**
- *  MHGalleryItem itemWithVimeoVideoID:
- *
- *  @param ID Example: http://vimeo.com/35515926 - 35515926 is the ID
- *
- */
-+ (instancetype)itemWithVimeoVideoID:(NSString*)ID;
-
-/**
- *  MHGalleryItem initWithImage
- *
- *  @param image to Display
- *
- */
-- (instancetype)initWithImage:(UIImage*)image;
-+ (instancetype)itemWithImage:(UIImage*)image;
+/// default is 0
+@property (nonatomic) NSTimeInterval videoDuration;
 
 @end

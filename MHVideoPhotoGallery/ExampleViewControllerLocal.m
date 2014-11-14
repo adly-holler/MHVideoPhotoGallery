@@ -7,10 +7,10 @@
 //
 
 #import "ExampleViewControllerLocal.h"
-#import <AssetsLibrary/AssetsLibrary.h>
+@import Photos;
 #import "MHGallery.h"
 #import "ExampleViewControllerTableView.h"
-
+#import "MHAssetGalleryItem.h"
 
 @implementation MHGallerySectionItem
 
@@ -39,35 +39,20 @@
 {
     [super viewDidLoad];
     self.allData = [NSMutableArray new];
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    
-    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-        [group setAssetsFilter:[ALAssetsFilter allAssets]];
-        NSMutableArray *items = [NSMutableArray new];
-        [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
-            if (alAsset) {
-                MHGalleryItem *item = [[MHGalleryItem alloc]initWithURL:[alAsset.defaultRepresentation.url absoluteString]
-                                                            galleryType:MHGalleryTypeImage];
-                [items addObject:item];
-            }
-        }];
-        if(group){
-            MHGallerySectionItem *section = [[MHGallerySectionItem alloc]initWithSectionName:[group valueForProperty:ALAssetsGroupPropertyName]
-                                                                                       items:items];
-            [self.allData addObject:section];
-        }
-        if (!group) {
-            [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-        }
-        
-    } failureBlock: ^(NSError *error) {
-        
-    }];
+    PHFetchResult *moments = [PHAssetCollection fetchMomentsWithOptions:[PHFetchOptions new]];
+    NSString *itemContext = self.description;
+    for (PHAssetCollection *moment in moments) {
 
-}
-
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 1;
+        PHFetchResult *assets = [PHAsset fetchAssetsInAssetCollection:moment options:[PHFetchOptions new]];
+        NSMutableArray *items = [NSMutableArray arrayWithCapacity:assets.count];
+        for (PHAsset *asset in assets) {
+            MHAssetGalleryItem *item = [MHAssetGalleryItem itemWithAsset:asset context:itemContext];
+            [items addObject:item];
+        }
+        MHGallerySectionItem *section = [[MHGallerySectionItem alloc] initWithSectionName:moment.localizedTitle items:items];
+        [self.allData addObject:section];
+    }
+    [self.tableView reloadData];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -81,10 +66,8 @@
     MHGallerySectionItem *section = self.allData[indexPath.row];
     
     MHGalleryItem *item = [section.galleryItems firstObject];
-    
-    [[MHGallerySharedManager sharedManager] getImageFromAssetLibrary:item.URLString
-                                                           assetType:MHAssetImageTypeThumb
-                                                        successBlock:^(UIImage *image, NSError *error) {
+
+    [item loadImageWithType:MHImageTypeFull completionHandler:^(UIImage *image, NSError *errorOrNil) {
         cell.iv.image = image;
     }];
     

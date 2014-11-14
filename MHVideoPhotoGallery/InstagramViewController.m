@@ -7,6 +7,7 @@
 //
 
 #import "InstagramViewController.h"
+#import "MHURLGalleryItem.h"
 
 @interface InstagramViewController ()
 
@@ -39,7 +40,7 @@
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                
                                
-                               NSDictionary *dict =[NSJSONSerialization JSONObjectWithData:data
+                               NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data
                                                                                    options:NSJSONReadingAllowFragments
                                                                                      error:nil];
                                
@@ -47,16 +48,14 @@
                                for (NSDictionary *dictionary in dict[@"data"]) {
                                    MHGalleryItem *item;
                                    if (dictionary[@"videos"]) {
-                                       item = [MHGalleryItem itemWithURL:dictionary[@"videos"][@"standard_resolution"][@"url"]
-                                                             galleryType:MHGalleryTypeVideo];
+                                       item = [[MHURLGalleryItem alloc] initWithURL:dictionary[@"videos"][@"standard_resolution"][@"url"] galleryType:MHGalleryTypeVideo];
                                        
                                    }else{
-                                       item = [MHGalleryItem itemWithURL:dictionary[@"images"][@"standard_resolution"][@"url"]
-                                                             galleryType:MHGalleryTypeImage];
+                                       item = [[MHURLGalleryItem alloc] initWithURL:dictionary[@"images"][@"standard_resolution"][@"url"] galleryType:MHGalleryTypeVideo];
                                        
                                    }
                                    
-                                   if(![dictionary[@"caption"] isKindOfClass:NSNull.class]){
+                                   if (dictionary[@"caption"] != NSNull.null) {
                                        item.descriptionString = dictionary[@"caption"][@"text"];
                                        
                                    }

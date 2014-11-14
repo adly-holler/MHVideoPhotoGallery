@@ -1,10 +1,9 @@
 
-#import <CoreMedia/CoreMedia.h>
-#import <AVFoundation/AVFoundation.h>
-#import <ImageIO/ImageIO.h>
-#import <MediaPlayer/MediaPlayer.h>
-#import <QuartzCore/QuartzCore.h>
-#import <AssetsLibrary/AssetsLibrary.h>
+@import CoreMedia;
+@import AVFoundation;
+@import ImageIO;
+@import MediaPlayer;
+@import QuartzCore;
 
 #import "UIImageView+MHGallery.h"
 #import "MHTransitionDismissMHGallery.h"

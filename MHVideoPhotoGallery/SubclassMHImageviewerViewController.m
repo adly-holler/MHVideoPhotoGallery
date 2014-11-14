@@ -7,7 +7,7 @@
 //
 
 #import "SubclassMHImageviewerViewController.h"
-
+#import "MHURLGalleryItem.h"
 @interface SubclassMHImageviewerViewController ()
 
 @end
@@ -19,7 +19,7 @@
 }
 
 -(MHGalleryItem *)itemForIndex:(NSInteger)index{    
-   return [MHGalleryItem itemWithURL:@"http://alles-bilder.de/landschaften/HD%20Landschaftsbilder%20(47).jpg" galleryType:MHGalleryTypeImage];
+   return [MHURLGalleryItem itemWithURL:[NSURL URLWithString:@"http://alles-bilder.de/landschaften/HD%20Landschaftsbilder%20(47).jpg"] galleryType:MHGalleryTypeImage];
 }
 
 -(void)viewDidLoad{

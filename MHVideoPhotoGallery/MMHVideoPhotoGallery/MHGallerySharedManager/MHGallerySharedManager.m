@@ -8,6 +8,8 @@
 
 #import "MHGallerySharedManager.h"
 #import "MHGallerySharedManagerPrivate.h"
+#import "MHURLGalleryItem.h"
+@import AssetsLibrary;
 
 @implementation MHGallerySharedManager
 
@@ -440,7 +442,7 @@
                         NSString *string = [dictionary[@"link"] firstObject][@"href"];
                         
                         string = [string stringByReplacingOccurrencesOfString:@"&feature=youtube_gdata" withString:@""];
-                        MHGalleryItem *item = [MHGalleryItem itemWithURL:string galleryType:MHGalleryTypeVideo];
+                        MHGalleryItem *item = [MHURLGalleryItem itemWithURL:string galleryType:MHGalleryTypeVideo];
                         if (withTitle) {
                             item.descriptionString = dictionary[@"title"][@"$t"];
                         }

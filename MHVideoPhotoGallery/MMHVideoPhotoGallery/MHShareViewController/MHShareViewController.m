@@ -11,22 +11,22 @@
 #import "MHGallery.h"
 #import "UIImageView+WebCache.h"
 #import "MHTransitionShowShareView.h"
-#import <CoreImage/CoreImage.h>
-#import <ImageIO/ImageIO.h>
+@import CoreImage;
+@import ImageIO;
 #import "MHGallerySharedManagerPrivate.h"
 #import "SDImageCache.h"
 #import <MobileCoreServices/UTCoreTypes.h>
 #import "MHGallery.h"
+@import Photos;
 
-@implementation MHImageURL
+@implementation MHIdentifierAsset
 
-- (id)initWithURL:(NSString*)URL
-            image:(UIImage*)image{
+- (instancetype)initWithIdentifier:(NSString *)identifier asset:(id)asset {
     self = [super init];
     if (!self)
         return nil;
-    self.URL = URL;
-    self.image = image;
+    _identifier = identifier;
+    _asset = asset;
     return self;
 }
 
@@ -608,11 +608,11 @@
                                                  }];
         };
         NSString *videoURLS = NSString.new;
-        for (MHImageURL *dataURL in images) {
-            if ([dataURL.image isKindOfClass:UIImage.class] && !dataURL.image.images) {
-                [shareconntroller addImage:dataURL.image];
+        for (MHIdentifierAsset *dataId in images) {
+            if ([dataId.asset isKindOfClass:UIImage.class] && ![dataId.asset images]) {
+                [shareconntroller addImage:dataId.asset];
             }else{
-                videoURLS = [videoURLS stringByAppendingString:[NSString stringWithFormat: @"%@ \n",dataURL.URL]];
+                videoURLS = [videoURLS stringByAppendingString:[NSString stringWithFormat: @"%@ \n",dataId.identifier]];
             }
         }
         [shareconntroller setInitialText:videoURLS];
@@ -632,29 +632,29 @@
 
 -(void)smsImages:(NSArray*)object{
     [self getAllImagesForSelectedRows:^(NSArray *images) {
-        MFMessageComposeViewController *picker = MFMessageComposeViewController.new;
-        picker.messageComposeDelegate = self;
+        MFMessageComposeViewController *messageVC = MFMessageComposeViewController.new;
+        messageVC.messageComposeDelegate = self;
         NSString *videoURLS = NSString.new;
         
-        for (MHImageURL *dataURL in images) {
-            if ([dataURL.image isKindOfClass:UIImage.class]) {
-                UIImage *image = dataURL.image;
+        for (MHIdentifierAsset *dataURL in images) {
+            if ([dataURL.asset isKindOfClass:UIImage.class]) {
+                UIImage *image = dataURL.asset;
                 if (image.images) {
-                    [picker addAttachmentData:[NSData dataWithContentsOfFile:[SDImageCache.sharedImageCache defaultCachePathForKey:dataURL.URL]]
+                    [messageVC addAttachmentData:[NSData dataWithContentsOfFile:[SDImageCache.sharedImageCache defaultCachePathForKey:dataURL.identifier]]
                                typeIdentifier:(__bridge NSString *)kUTTypeGIF
                                      filename:@"animated.gif"];
                 }else{
-                    [picker addAttachmentData:UIImageJPEGRepresentation(dataURL.image, 1.0)
+                    [messageVC addAttachmentData:UIImageJPEGRepresentation(image, 1.0)
                                typeIdentifier:@"public.image"
                                      filename:@"image.JPG"];
                 }
             }else{
-                videoURLS = [videoURLS stringByAppendingString:[NSString stringWithFormat: @"%@ \n",dataURL.URL]];
+                videoURLS = [videoURLS stringByAppendingString:[NSString stringWithFormat: @"%@ \n",dataURL.identifier]];
             }
         }
-        picker.body = videoURLS;
+        messageVC.body = videoURLS;
         
-        [self presentViewController:picker
+        [self presentViewController:messageVC
                            animated:YES
                          completion:nil];
         
@@ -667,21 +667,21 @@
         picker.mailComposeDelegate = self;
         NSString *videoURLS = [NSString new];
         
-        for (MHImageURL *dataURL in images) {
-            if ([dataURL.image isKindOfClass:UIImage.class]) {
-                UIImage *image = dataURL.image;
+        for (MHIdentifierAsset *dataURL in images) {
+            if ([dataURL.asset isKindOfClass:UIImage.class]) {
+                UIImage *image = dataURL.asset;
                 if (image.images) {
-                    [picker addAttachmentData:[NSData dataWithContentsOfFile:[[SDImageCache sharedImageCache] defaultCachePathForKey:dataURL.URL]]
+                    [picker addAttachmentData:[NSData dataWithContentsOfFile:[[SDImageCache sharedImageCache] defaultCachePathForKey:dataURL.identifier]]
                                      mimeType:@"image/gif"
                                      fileName:@"pic.gif"];
                 }else{
-                    [picker addAttachmentData:UIImageJPEGRepresentation(dataURL.image, 1.0)
+                    [picker addAttachmentData:UIImageJPEGRepresentation(image, 1.0)
                                      mimeType:@"image/jpeg"
                                      fileName:@"image"];
                 }
                 
             }else{
-                videoURLS = [videoURLS stringByAppendingString:[NSString stringWithFormat: @"%@ \n",dataURL.URL]];
+                videoURLS = [videoURLS stringByAppendingString:[NSString stringWithFormat: @"%@ \n",dataURL.identifier]];
             }
         }
         [picker setMessageBody:videoURLS isHTML:NO];
@@ -718,7 +718,7 @@
         if (saveCounter == self.selectedRows.count) {
             UIApplication.sharedApplication.networkActivityIndicatorVisible = NO;
             if (self.downloadView) {
-                [self removeBlurBlurBackgorundToolbarFromSuperView:^(BOOL complition) {
+                [self removeBlurBackgroundToolbarFromSuperview:^(BOOL complition) {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         self.finishedCallbackDownloadData(self.dataDownload);
                     });
@@ -732,13 +732,13 @@
     });
     _saveCounter = saveCounter;
 }
--(void)removeBlurBlurBackgorundToolbarFromSuperView:(void(^)(BOOL complition))SuccessBlock{
+-(void)removeBlurBackgroundToolbarFromSuperview:(void(^)(BOOL completion))successBlock{
     [UIView animateWithDuration:0.3 animations:^{
-        self.downloadView.blurBackgroundToolbar.alpha =0;
+        self.downloadView.blurBackgroundToolbar.alpha = 0;
     } completion:^(BOOL finished) {
         [self.downloadView removeFromSuperview];
-        if (SuccessBlock) {
-            SuccessBlock(YES);
+        if (successBlock) {
+            successBlock(YES);
         }
     }];
 }
@@ -771,7 +771,7 @@
             for (NSURLSession *session in weakSelf.sessions) {
                 [session invalidateAndCancel];
             }
-            [weakSelf removeBlurBlurBackgorundToolbarFromSuperView:nil];
+            [weakSelf removeBlurBackgroundToolbarFromSuperview:nil];
         };
         self.downloadView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         [self.downloadView attributedStringForDownloadLabelWithDownloadedDataNumber:@(0) maxNumber:@(self.selectedRows.count)];
@@ -796,64 +796,51 @@
         
         if (item.galleryType == MHGalleryTypeVideo) {
             if (!saveToCameraRoll) {
-                MHImageURL *imageURL = [MHImageURL.alloc initWithURL:item.URLString image:nil];
-                [weakSelf addDataToDownloadArray:imageURL];
+                MHIdentifierAsset *imageID = [[MHIdentifierAsset alloc] initWithIdentifier:item.identifier asset:nil];
+                [weakSelf addDataToDownloadArray:imageID];
             }else{
-                [MHGallerySharedManager.sharedManager getURLForMediaPlayer:item.URLString successBlock:^(NSURL *URL, NSError *error) {
-                    NSURLSession *session = [NSURLSession sessionWithConfiguration:NSURLSessionConfiguration.defaultSessionConfiguration];
-                    
-                    [self.sessions addObject:session];
-                    [[session downloadTaskWithURL:URL completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-                        if (error){
-                            weakSelf.saveCounter++;
-                            return;
-                        }
-                        NSURL *documentsURL = [[NSFileManager.defaultManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject];
-                        NSURL *tempURL = [documentsURL URLByAppendingPathComponent:@"storeForShare.mp4"];
+                [item loadVideoWithCompletionHandler:^(AVPlayerItem *playerItem, NSError *errorOrNil) {
+                    if ([playerItem.asset isKindOfClass:AVURLAsset.class]) {
+                        NSURL *url = [(AVURLAsset *)playerItem.asset URL];
+                        NSURLSession *session = [NSURLSession sessionWithConfiguration:NSURLSessionConfiguration.defaultSessionConfiguration];
                         
-                        NSError *moveItemError = nil;
-                        [NSFileManager.defaultManager moveItemAtURL:location toURL:tempURL error:&moveItemError];
-                        
-                        if (moveItemError) {
-                            weakSelf.saveCounter++;
-                            return;
-                        }
-                        ALAssetsLibrary* library = ALAssetsLibrary.new;
-                        [library writeVideoAtPathToSavedPhotosAlbum:tempURL
-                                                    completionBlock:^(NSURL *assetURL, NSError *error){
-                                                        NSError *removeError =nil;
-                                                        [NSFileManager.defaultManager removeItemAtURL:tempURL error:&removeError];
-                                                        
-                                                        [weakSelf.sessions removeObject:session];
-                                                        weakSelf.saveCounter++;
-                                                    }];
-                    }] resume];
+                        [self.sessions addObject:session];
+                        [[session downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+                            if (error){
+                                weakSelf.saveCounter++;
+                                return;
+                            }
+                            NSURL *documentsURL = [[NSFileManager.defaultManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject];
+                            NSURL *tempURL = [documentsURL URLByAppendingPathComponent:@"storeForShare.mp4"];
+                            
+                            NSError *moveItemError = nil;
+                            [NSFileManager.defaultManager moveItemAtURL:location toURL:tempURL error:&moveItemError];
+                            
+                            if (moveItemError) {
+                                weakSelf.saveCounter++;
+                                return;
+                            }
+                            ALAssetsLibrary* library = ALAssetsLibrary.new;
+                            [library writeVideoAtPathToSavedPhotosAlbum:tempURL
+                                                        completionBlock:^(NSURL *assetURL, NSError *error){
+                                                            NSError *removeError =nil;
+                                                            [NSFileManager.defaultManager removeItemAtURL:tempURL error:&removeError];
+                                                            
+                                                            [weakSelf.sessions removeObject:session];
+                                                            weakSelf.saveCounter++;
+                                                        }];
+                        }] resume];
+                    } else {
+                        NSAssert(NO, @"Attempting to save a video from camera roll to camera roll. This is not currently supported.");
+                    }
                 }];
             }
             
-        }
-        
-        if (item.galleryType == MHGalleryTypeImage) {
-            
-            if ([item.URLString rangeOfString:MHAssetLibrary].location != NSNotFound && item.URLString) {
-                [MHGallerySharedManager.sharedManager getImageFromAssetLibrary:item.URLString
-                                                                     assetType:MHAssetImageTypeFull
-                                                                  successBlock:^(UIImage *image, NSError *error) {
-                                                                      MHImageURL *imageURL = [MHImageURL.alloc initWithURL:item.URLString
-                                                                                                                     image:image];
-                                                                      [weakSelf addDataToDownloadArray:imageURL];
-                                                                  }];
-            }else if (item.image) {
-                [self addDataToDownloadArray:item.image];
-            }else{
-                
-                [SDWebImageManager.sharedManager downloadImageWithURL:[NSURL URLWithString:item.URLString] options:SDWebImageContinueInBackground progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                    
-                    MHImageURL *imageURLMH = [MHImageURL.alloc initWithURL:item.URLString
-                                                                     image:image];
-                    [weakSelf addDataToDownloadArray:imageURLMH];
-                }];
-            }
+        } else if (item.galleryType == MHGalleryTypeImage) {
+            [item loadImageWithType:MHImageTypeFull completionHandler:^(UIImage *image, NSError *errorOrNil) {
+                MHIdentifierAsset *imageID = [[MHIdentifierAsset alloc] initWithIdentifier:item.identifier asset:image];
+                [weakSelf addDataToDownloadArray:imageID];
+            }];
         }
     }
 }
@@ -932,17 +919,17 @@
 }
 -(void)saveImages:(NSArray*)object{
     [self getAllImagesForSelectedRows:^(NSArray *images) {
-        for (MHImageURL *dataURL in images) {
+        for (MHIdentifierAsset *dataURL in images) {
             
-            if ([dataURL.image isKindOfClass:[UIImage class]]) {
+            if ([dataURL.asset isKindOfClass:UIImage.class]) {
                 
-                UIImage *imageToStore = dataURL.image;
-                
+                UIImage *imageToStore = dataURL.asset;
+
                 ALAssetsLibrary* library = ALAssetsLibrary.new;
                 NSData *data;
                 
                 if (imageToStore.images) {
-                    data = [NSData dataWithContentsOfFile:[[SDImageCache sharedImageCache] defaultCachePathForKey:dataURL.URL]];
+                    data = [NSData dataWithContentsOfFile:[[SDImageCache sharedImageCache] defaultCachePathForKey:dataURL.identifier]];
                 }else{
                     data = UIImageJPEGRepresentation(imageToStore, 1.0);
                 }

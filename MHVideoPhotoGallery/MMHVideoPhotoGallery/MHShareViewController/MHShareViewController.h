@@ -22,9 +22,9 @@ _Pragma("clang diagnostic pop") \
 
 
 
-@interface MHImageURL : NSObject
-@property (nonatomic,strong) NSString *URL;
-@property (nonatomic,strong) UIImage *image;
+@interface MHIdentifierAsset : NSObject
+@property (nonatomic,strong, readonly) NSString *identifier;
+@property (nonatomic,strong) id asset;
 @end
 
 @interface MHDownloadView : UIView

@@ -10,6 +10,7 @@
 #import "MHGallery.h"
 #import "SDImageCache.h"
 #import "UIImageView+WebCache.h"
+#import "MHURLGalleryItem.h"
 
 @implementation UIImageView (MHGallery)
 
@@ -36,41 +37,31 @@
 
 -(void)setImageForMHGalleryItem:(MHGalleryItem*)item
                       imageType:(MHImageType)imageType
-                   successBlock:(void (^)(UIImage *image,NSError *error))succeedBlock{
+                   successBlock:(void (^)(UIImage *image,NSError *error))successBlock{
     
     __weak typeof(self) weakSelf = self;
     
-    if ([item.URLString rangeOfString:MHAssetLibrary].location != NSNotFound && item.URLString) {
-        
-        MHAssetImageType assetType = MHAssetImageTypeThumb;
-        if (imageType == MHImageTypeFull) {
-            assetType = MHAssetImageTypeFull;
-        }
-        
-        [MHGallerySharedManager.sharedManager getImageFromAssetLibrary:item.URLString
-                                                             assetType:assetType
-                                                          successBlock:^(UIImage *image, NSError *error) {
-                                                              [weakSelf setImageForImageView:image successBlock:succeedBlock];
-                                                          }];
-    }else if(item.image){
-        [self setImageForImageView:item.image successBlock:succeedBlock];
-    }else{
-        
-        NSString *placeholderURL = item.thumbnailURL;
-        NSString *toLoadURL = item.URLString;
+    if ([item isKindOfClass:MHURLGalleryItem.class]) {
+        MHURLGalleryItem *urlItem = (id)item;
+        NSURL *placeholderURL = urlItem.thumbnailURL;
+        NSURL *toLoadURL = urlItem.url;
         
         if (imageType == MHImageTypeThumb) {
-            toLoadURL = item.thumbnailURL;
-            placeholderURL = item.URLString;
+            toLoadURL = urlItem.thumbnailURL;
+            placeholderURL = urlItem.url;
         }
         
-        [self sd_setImageWithURL:[NSURL URLWithString:toLoadURL]
-                placeholderImage:[SDImageCache.sharedImageCache imageFromDiskCacheForKey:placeholderURL]
+        [self sd_setImageWithURL:toLoadURL
+                placeholderImage:[SDImageCache.sharedImageCache imageFromDiskCacheForKey:placeholderURL.absoluteString]
                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                           if (succeedBlock) {
-                               succeedBlock (image,error);
+                           if (successBlock != nil) {
+                               successBlock (image,error);
                            }
                        }];
+    } else {
+        [item loadImageWithType:imageType completionHandler:^(UIImage *image, NSError *errorOrNil) {
+            [weakSelf setImageForImageView:image successBlock:successBlock];
+        }];
     }
 }
 

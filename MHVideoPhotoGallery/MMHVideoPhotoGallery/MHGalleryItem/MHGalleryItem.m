@@ -4,75 +4,80 @@
 //
 //  Created by Mario Hahn on 01.04.14.
 //  Copyright (c) 2014 Mario Hahn. All rights reserved.
-//
+//  Heavily modified by Adlai Holler. Modifications are Copyright (c) 2014 Adlai Holler.
 
 #import "MHGalleryItem.h"
+#import "MHGalleryItem-Subclass.h"
+
+static BOOL MHGalleryItemRegistrationEnabled = YES;
 
 @implementation MHGalleryItem
 
-- (instancetype)initWithImage:(UIImage*)image{
-    self = [super init];
-    if (!self)
-        return nil;
-    self.galleryType = MHGalleryTypeImage;
-    self.image = image;
-    return self;
++ (BOOL)registrationEnabled {
+    return MHGalleryItemRegistrationEnabled;
 }
 
-+ (instancetype)itemWithVimeoVideoID:(NSString*)ID{
-    return [self.class.alloc initWithURL:[NSString stringWithFormat:MHVimeoBaseURL,ID]
-                             galleryType:MHGalleryTypeVideo];
++ (void)setRegistrationEnabled:(BOOL)enabled {
+    MHGalleryItemRegistrationEnabled = enabled;
 }
 
-+ (instancetype)itemWithYoutubeVideoID:(NSString*)ID{
-    return [self.class.alloc initWithURL:[NSString stringWithFormat:MHYoutubeBaseURL,ID]
-                             galleryType:MHGalleryTypeVideo];
++ (instancetype)itemWithIdentifier:(NSString *)identifier type:(MHGalleryType)galleryType context:(NSString *)context {
+    return [self itemWithIdentifier:identifier type:galleryType context:context awaken:nil];
 }
 
-+(instancetype)itemWithURL:(NSString *)URLString
-               galleryType:(MHGalleryType)galleryType{
++ (NSMapTable *)registryForContext:(NSString *)context {
+    if (context == nil) {
+        context = @"MHGalleryItemContextDefault";
+    }
     
-    return [self.class.alloc initWithURL:URLString
-                             galleryType:galleryType];
+    static NSMutableDictionary *registry;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        registry = [NSMutableDictionary new];
+    });
+    NSMapTable *result = registry[context];
+    if (result == nil) {
+        result = [NSMapTable strongToWeakObjectsMapTable];
+        registry[context] = result;
+    }
+    return result;
 }
 
-- (instancetype)initWithURL:(NSString*)URLString
-                galleryType:(MHGalleryType)galleryType{
++ (instancetype)itemWithIdentifier:(NSString *)identifier type:(MHGalleryType)galleryType context:(NSString *)context awaken:(void (^)(id self))awakenBlock {
+    if (!self.registrationEnabled) {
+        id result = [[self alloc] initWithIdentifier:identifier type:galleryType];
+        if (awakenBlock != nil) {
+            awakenBlock(result);
+        }
+    }
+
+    NSMapTable *registry = [self registryForContext:context];
+
+    MHGalleryItem *result = [registry objectForKey:identifier];
+    if (result == nil) {
+        result = [[self alloc] initWithIdentifier:identifier type:galleryType];
+        if (awakenBlock != nil) {
+            awakenBlock(result);
+        }
+        [registry setObject:result forKey:identifier];
+    }
+    return result;
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier type:(MHGalleryType)galleryType {
     self = [super init];
-    if (!self)
-        return nil;
-    self.URLString = URLString;
-    self.thumbnailURL = URLString;
-    self.descriptionString = nil;
-    self.galleryType = galleryType;
-    self.attributedString = nil;
+    if (!self) { return nil; }
+    _identifier = [identifier copy];
+    _galleryType = galleryType;
     return self;
 }
-+(instancetype)itemWithURL:(NSString *)URLString
-              thumbnailURL:(NSString*)thumbnailURL{
-    
-    return [self.class.alloc initWithURL:URLString
-                            thumbnailURL:thumbnailURL];
+
+- (void)loadImageWithType:(MHImageType)imageType completionHandler:(MHGalleryItemLoadImageCompletionHandler)completionHandler {
+    NSAssert(NO, @"Base class MHGalleryItem does not implement %s", __PRETTY_FUNCTION__);
 }
 
-
-- (instancetype)initWithURL:(NSString*)URLString
-               thumbnailURL:(NSString*)thumbnailURL{
-    self = [super init];
-    if (!self)
-        return nil;
-    self.URLString = URLString;
-    self.thumbnailURL = thumbnailURL;
-    self.descriptionString = nil;
-    self.galleryType = MHGalleryTypeImage;
-    self.attributedString = nil;
-    return self;
+- (void)loadVideoWithCompletionHandler:(MHGalleryItemLoadVideoCompletionHandler)completionHandler {
+    NSAssert(NO, @"Base class MHGalleryItem does not implement %s", __PRETTY_FUNCTION__);    
 }
-
-
-+(instancetype)itemWithImage:(UIImage *)image{
-    return [self.class.alloc initWithImage:image];
-}
-
 @end
 
