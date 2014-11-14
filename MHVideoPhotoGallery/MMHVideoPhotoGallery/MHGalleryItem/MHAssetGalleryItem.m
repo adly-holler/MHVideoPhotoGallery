@@ -22,6 +22,8 @@ static inline MHGalleryType MHGalleryTypeFromPHAssetMediaType(PHAssetMediaType a
 };
 
 @implementation MHAssetGalleryItem
+@synthesize imageOptions = _imageOptions;
+@synthesize videoOptions = _videoOptions;
 
 + (instancetype)itemWithAsset:(PHAsset *)asset context:(NSString *)contextOrNil {
     MHAssetGalleryItem *item = [self itemWithIdentifier:asset.localIdentifier type:MHGalleryTypeFromPHAssetMediaType(asset.mediaType) context:contextOrNil awaken:^(MHAssetGalleryItem *self) {
@@ -41,17 +43,33 @@ static inline MHGalleryType MHGalleryTypeFromPHAssetMediaType(PHAssetMediaType a
 }
 
 - (PHImageRequestOptions *)imageOptions {
-    if (_imageOptions == nil) {
+    if (_imageOptions == nil && self.galleryType == MHGalleryTypeImage) {
         _imageOptions = [PHImageRequestOptions new];
     }
     return _imageOptions;
 }
 
 - (PHVideoRequestOptions *)videoOptions {
-    if (_videoOptions == nil) {
+    if (_videoOptions == nil && self.galleryType == MHGalleryTypeVideo) {
         _videoOptions = [PHVideoRequestOptions new];
     }
     return _videoOptions;
+}
+
+- (id)options {
+    if (self.galleryType == MHGalleryTypeImage) {
+        return self.imageOptions;
+    } else {
+        return self.videoOptions;
+    }
+}
+
+- (void)setOptions:(id)options {
+    if (self.galleryType == MHGalleryTypeImage) {
+        self.imageOptions = options;
+    } else {
+        self.videoOptions = options;
+    }
 }
 
 - (void)loadImageWithType:(MHImageType)imageType completionHandler:(MHGalleryItemLoadImageCompletionHandler)completionHandler {

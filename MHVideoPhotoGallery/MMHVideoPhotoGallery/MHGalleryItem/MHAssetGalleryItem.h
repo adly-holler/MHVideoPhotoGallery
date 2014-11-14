@@ -27,7 +27,12 @@
 @property (nonatomic) PHImageContentMode contentMode;
 // default is AspectFill
 @property (nonatomic) PHImageContentMode thumbnailContentMode;
-// default is [PHImageRequestOptions new]/[PHVideoRequestOptions new]
+
+// passthrough to either imageOptions or videoOptions
+@property (nonatomic, strong) id options;
+// lazily created new instance for images, default nil for videos
 @property (nonatomic, strong) PHImageRequestOptions *imageOptions;
+// lazily created new instance for videos, default nil for images
 @property (nonatomic, strong) PHVideoRequestOptions *videoOptions;
+
 @end
