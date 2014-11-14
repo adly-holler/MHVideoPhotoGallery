@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CCAC8C381A15AB410079F27D /* MHURLGalleryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CCAC8C371A15AB410079F27D /* MHURLGalleryItem.m */; };
-		CCAC8C3B1A15C9980079F27D /* MHAssetGalleryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CCAC8C3A1A15C9980079F27D /* MHAssetGalleryItem.m */; };
-		CCAC8C3E1A15CD8F0079F27D /* MHBasicGalleryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CCAC8C3D1A15CD8F0079F27D /* MHBasicGalleryItem.m */; };
-		CCAC8C421A15F0D40079F27D /* MHLegacyAssetGalleryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CCAC8C411A15F0D40079F27D /* MHLegacyAssetGalleryItem.m */; };
+		CCAC8C451A1603AB0079F27D /* MHLegacyAssetGalleryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CCAC8C441A1603AB0079F27D /* MHLegacyAssetGalleryItem.m */; };
+		CCAC8C4D1A1603D30079F27D /* MHAssetGalleryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CCAC8C471A1603D30079F27D /* MHAssetGalleryItem.m */; };
+		CCAC8C4E1A1603D30079F27D /* MHBasicGalleryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CCAC8C491A1603D30079F27D /* MHBasicGalleryItem.m */; };
+		CCAC8C4F1A1603D30079F27D /* MHURLGalleryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CCAC8C4C1A1603D30079F27D /* MHURLGalleryItem.m */; };
 		F514263518911D8E0091E3DF /* 707-albums-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = F514263318911D8E0091E3DF /* 707-albums-selected.png */; };
 		F514263618911D8E0091E3DF /* 707-albums-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F514263418911D8E0091E3DF /* 707-albums-selected@2x.png */; };
 		F514263918911D920091E3DF /* 705-photos-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = F514263718911D920091E3DF /* 705-photos-selected.png */; };
@@ -121,15 +121,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CCAC8C361A15AB410079F27D /* MHURLGalleryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHURLGalleryItem.h; sourceTree = "<group>"; };
-		CCAC8C371A15AB410079F27D /* MHURLGalleryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHURLGalleryItem.m; sourceTree = "<group>"; };
-		CCAC8C391A15C9980079F27D /* MHAssetGalleryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHAssetGalleryItem.h; sourceTree = "<group>"; };
-		CCAC8C3A1A15C9980079F27D /* MHAssetGalleryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHAssetGalleryItem.m; sourceTree = "<group>"; };
-		CCAC8C3C1A15CD8F0079F27D /* MHBasicGalleryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHBasicGalleryItem.h; sourceTree = "<group>"; };
-		CCAC8C3D1A15CD8F0079F27D /* MHBasicGalleryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHBasicGalleryItem.m; sourceTree = "<group>"; };
-		CCAC8C3F1A15D6090079F27D /* MHGalleryItem-Subclass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MHGalleryItem-Subclass.h"; sourceTree = "<group>"; };
-		CCAC8C401A15F0D40079F27D /* MHLegacyAssetGalleryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHLegacyAssetGalleryItem.h; sourceTree = "<group>"; };
-		CCAC8C411A15F0D40079F27D /* MHLegacyAssetGalleryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHLegacyAssetGalleryItem.m; sourceTree = "<group>"; };
+		CCAC8C431A1603AA0079F27D /* MHLegacyAssetGalleryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLegacyAssetGalleryItem.h; path = MMHVideoPhotoGallery/MHGalleryItem/MHLegacyAssetGalleryItem.h; sourceTree = "<group>"; };
+		CCAC8C441A1603AB0079F27D /* MHLegacyAssetGalleryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MHLegacyAssetGalleryItem.m; path = MMHVideoPhotoGallery/MHGalleryItem/MHLegacyAssetGalleryItem.m; sourceTree = "<group>"; };
+		CCAC8C461A1603D30079F27D /* MHAssetGalleryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHAssetGalleryItem.h; path = MMHVideoPhotoGallery/MHGalleryItem/MHAssetGalleryItem.h; sourceTree = "<group>"; };
+		CCAC8C471A1603D30079F27D /* MHAssetGalleryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MHAssetGalleryItem.m; path = MMHVideoPhotoGallery/MHGalleryItem/MHAssetGalleryItem.m; sourceTree = "<group>"; };
+		CCAC8C481A1603D30079F27D /* MHBasicGalleryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHBasicGalleryItem.h; path = MMHVideoPhotoGallery/MHGalleryItem/MHBasicGalleryItem.h; sourceTree = "<group>"; };
+		CCAC8C491A1603D30079F27D /* MHBasicGalleryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MHBasicGalleryItem.m; path = MMHVideoPhotoGallery/MHGalleryItem/MHBasicGalleryItem.m; sourceTree = "<group>"; };
+		CCAC8C4A1A1603D30079F27D /* MHGalleryItem-Subclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MHGalleryItem-Subclass.h"; path = "MMHVideoPhotoGallery/MHGalleryItem/MHGalleryItem-Subclass.h"; sourceTree = "<group>"; };
+		CCAC8C4B1A1603D30079F27D /* MHURLGalleryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHURLGalleryItem.h; path = MMHVideoPhotoGallery/MHGalleryItem/MHURLGalleryItem.h; sourceTree = "<group>"; };
+		CCAC8C4C1A1603D30079F27D /* MHURLGalleryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MHURLGalleryItem.m; path = MMHVideoPhotoGallery/MHGalleryItem/MHURLGalleryItem.m; sourceTree = "<group>"; };
 		F514263318911D8E0091E3DF /* 707-albums-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "707-albums-selected.png"; sourceTree = "<group>"; };
 		F514263418911D8E0091E3DF /* 707-albums-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "707-albums-selected@2x.png"; sourceTree = "<group>"; };
 		F514263718911D920091E3DF /* 705-photos-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "705-photos-selected.png"; sourceTree = "<group>"; };
@@ -472,17 +472,17 @@
 		F543E50018EAAF1B008D7590 /* MHGalleryItem */ = {
 			isa = PBXGroup;
 			children = (
-				CCAC8C3F1A15D6090079F27D /* MHGalleryItem-Subclass.h */,
+				CCAC8C461A1603D30079F27D /* MHAssetGalleryItem.h */,
+				CCAC8C471A1603D30079F27D /* MHAssetGalleryItem.m */,
+				CCAC8C481A1603D30079F27D /* MHBasicGalleryItem.h */,
+				CCAC8C491A1603D30079F27D /* MHBasicGalleryItem.m */,
+				CCAC8C4A1A1603D30079F27D /* MHGalleryItem-Subclass.h */,
+				CCAC8C4B1A1603D30079F27D /* MHURLGalleryItem.h */,
+				CCAC8C4C1A1603D30079F27D /* MHURLGalleryItem.m */,
 				F543E50118EAAF3C008D7590 /* MHGalleryItem.h */,
 				F543E50218EAAF3C008D7590 /* MHGalleryItem.m */,
-				CCAC8C361A15AB410079F27D /* MHURLGalleryItem.h */,
-				CCAC8C371A15AB410079F27D /* MHURLGalleryItem.m */,
-				CCAC8C391A15C9980079F27D /* MHAssetGalleryItem.h */,
-				CCAC8C3A1A15C9980079F27D /* MHAssetGalleryItem.m */,
-				CCAC8C3C1A15CD8F0079F27D /* MHBasicGalleryItem.h */,
-				CCAC8C3D1A15CD8F0079F27D /* MHBasicGalleryItem.m */,
-				CCAC8C401A15F0D40079F27D /* MHLegacyAssetGalleryItem.h */,
-				CCAC8C411A15F0D40079F27D /* MHLegacyAssetGalleryItem.m */,
+				CCAC8C431A1603AA0079F27D /* MHLegacyAssetGalleryItem.h */,
+				CCAC8C441A1603AB0079F27D /* MHLegacyAssetGalleryItem.m */,
 			);
 			name = MHGalleryItem;
 			sourceTree = "<group>";
@@ -796,24 +796,24 @@
 				F531B4C7197911B400361059 /* UIButton+WebCache.m in Sources */,
 				F531B4C5197911B400361059 /* SDWebImageManager.m in Sources */,
 				F5D250001885D3D7004D97CA /* ExampleViewControllerImageView.m in Sources */,
-				CCAC8C421A15F0D40079F27D /* MHLegacyAssetGalleryItem.m in Sources */,
+				CCAC8C451A1603AB0079F27D /* MHLegacyAssetGalleryItem.m in Sources */,
 				F5D24FFD1885CDDD004D97CA /* ExampleViewControllerTableView.m in Sources */,
 				F52A4A441901A47F00E4E2BB /* InstagramViewController.m in Sources */,
 				F531B4C3197911B400361059 /* SDWebImageDownloader.m in Sources */,
+				CCAC8C4D1A1603D30079F27D /* MHAssetGalleryItem.m in Sources */,
 				F5C52E8F18C0828E001E431E /* MHTransitionShowOverView.m in Sources */,
-				CCAC8C3B1A15C9980079F27D /* MHAssetGalleryItem.m in Sources */,
 				F531B4C1197911B400361059 /* SDWebImageCompat.m in Sources */,
 				F5C52E9018C0828E001E431E /* MHTransitionShowShareView.m in Sources */,
 				F531B4CB197911B400361059 /* UIImageView+WebCache.m in Sources */,
 				F543E50318EAAF3C008D7590 /* MHGalleryItem.m in Sources */,
 				F543E50E18EACB23008D7590 /* MHOverviewController.m in Sources */,
 				F53F925417EB008100A9FE6A /* AppDelegate.m in Sources */,
+				CCAC8C4F1A1603D30079F27D /* MHURLGalleryItem.m in Sources */,
 				F531B4CA197911B400361059 /* UIImageView+HighlightedWebCache.m in Sources */,
 				F5C52E9318C086E4001E431E /* MHGallery.m in Sources */,
 				F531B4C0197911B400361059 /* SDImageCache.m in Sources */,
 				F5B1AA8A18ED82CE00FE4682 /* SubclassMHImageviewerViewController.m in Sources */,
 				F531B4C9197911B400361059 /* UIImage+MultiFormat.m in Sources */,
-				CCAC8C381A15AB410079F27D /* MHURLGalleryItem.m in Sources */,
 				F531B4C4197911B400361059 /* SDWebImageDownloaderOperation.m in Sources */,
 				F543E51118EB0D25008D7590 /* MHMediaPreviewCollectionViewCell.m in Sources */,
 				F5DBBF31187D584C00BEFE29 /* MHGalleryImageViewerViewController.m in Sources */,
@@ -825,7 +825,7 @@
 				F5C52E8D18C0828E001E431E /* MHTransitionPresentMHGallery.m in Sources */,
 				F536534A1897D11100748466 /* ExampleViewControllerLocal.m in Sources */,
 				F531B4C2197911B400361059 /* SDWebImageDecoder.m in Sources */,
-				CCAC8C3E1A15CD8F0079F27D /* MHBasicGalleryItem.m in Sources */,
+				CCAC8C4E1A1603D30079F27D /* MHBasicGalleryItem.m in Sources */,
 				F5C52E8E18C0828E001E431E /* MHTransitionShowDetail.m in Sources */,
 				F55CB5BC18C5FE2E0039941E /* MHCustomization.m in Sources */,
 				F5C52E8C18C0828E001E431E /* MHTransitionDismissMHGallery.m in Sources */,
