@@ -28,5 +28,6 @@
 // default is AspectFill
 @property (nonatomic) PHImageContentMode thumbnailContentMode;
 // default is [PHImageRequestOptions new]/[PHVideoRequestOptions new]
-@property (nonatomic, strong) id options;
+@property (nonatomic, strong) PHImageRequestOptions *imageOptions;
+@property (nonatomic, strong) PHVideoRequestOptions *videoOptions;
 @end

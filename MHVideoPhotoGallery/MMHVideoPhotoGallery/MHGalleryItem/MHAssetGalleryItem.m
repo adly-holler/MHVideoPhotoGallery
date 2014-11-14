@@ -37,31 +37,33 @@ static inline MHGalleryType MHGalleryTypeFromPHAssetMediaType(PHAssetMediaType a
     _imageSize = CGSizeMake(1024, 1024);
     _thumbnailSize = CGSizeMake(256, 256);
     _thumbnailContentMode = PHImageContentModeAspectFill;
-    _options = self.galleryType == MHGalleryTypeImage ? [PHImageRequestOptions new] : [PHVideoRequestOptions new];
     _contentMode = PHImageContentModeAspectFit;
 }
 
-- (void)setOptions:(id)options {
-    _options = options;
-    Class optionsClass = nil;
-    if (self.galleryType == MHGalleryTypeImage) {
-        optionsClass = PHImageRequestOptions.class;
-    } else {
-        optionsClass = PHVideoRequestOptions.class;
+- (PHImageRequestOptions *)imageOptions {
+    if (_imageOptions == nil) {
+        _imageOptions = [PHImageRequestOptions new];
     }
-    NSAssert([options isKindOfClass:optionsClass], @"");
+    return _imageOptions;
+}
+
+- (PHVideoRequestOptions *)videoOptions {
+    if (_videoOptions == nil) {
+        _videoOptions = [PHVideoRequestOptions new];
+    }
+    return _videoOptions;
 }
 
 - (void)loadImageWithType:(MHImageType)imageType completionHandler:(MHGalleryItemLoadImageCompletionHandler)completionHandler {
     CGSize imageSize = imageType == MHImageTypeFull ? self.imageSize : self.thumbnailSize;
     PHImageContentMode contentMode = imageType == MHImageTypeFull ? self.contentMode : self.thumbnailContentMode;
-    [self.imageManager requestImageForAsset:self.asset targetSize:imageSize contentMode:contentMode options:self.options resultHandler:^(UIImage *result, NSDictionary *info) {
+    [self.imageManager requestImageForAsset:self.asset targetSize:imageSize contentMode:contentMode options:self.imageOptions resultHandler:^(UIImage *result, NSDictionary *info) {
         completionHandler(result, info[PHImageErrorKey]);
     }];
 }
 
 - (void)loadVideoWithCompletionHandler:(MHGalleryItemLoadVideoCompletionHandler)completionHandler {
-    [self.imageManager requestPlayerItemForVideo:self.asset options:self.options resultHandler:^(AVPlayerItem *playerItem, NSDictionary *info) {
+    [self.imageManager requestPlayerItemForVideo:self.asset options:self.videoOptions resultHandler:^(AVPlayerItem *playerItem, NSDictionary *info) {
         completionHandler(playerItem, info[PHImageErrorKey]);
     }];
 }
