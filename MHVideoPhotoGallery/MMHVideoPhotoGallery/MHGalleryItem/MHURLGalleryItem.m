@@ -45,12 +45,21 @@
 }
 
 - (void)loadImageWithType:(MHImageType)imageType completionHandler:(MHGalleryItemLoadImageCompletionHandler)completionHandler {
-    NSURL *url = imageType == MHImageTypeFull ? self.url : self.thumbnailURL;
-    [SDWebImageDownloader.sharedDownloader downloadImageWithURL:url options:self.options progress:nil completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-        [NSOperationQueue.mainQueue addOperationWithBlock:^{
+    if (self.galleryType == MHGalleryTypeImage) {
+        NSURL *url = imageType == MHImageTypeFull ? self.url : self.thumbnailURL;
+        [SDWebImageDownloader.sharedDownloader downloadImageWithURL:url options:self.options progress:nil completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+            [NSOperationQueue.mainQueue addOperationWithBlock:^{
+                completionHandler(image, error);
+            }];
+        }];
+    } else {
+        NSAssert(imageType == MHImageTypeThumb, @"didn't expect video to get request for full image");
+        [MHGallerySharedManager.sharedManager startDownloadingThumbImage:self.url.absoluteString successBlock:^(UIImage *image, NSUInteger videoDuration, NSError *error) {
+            self.videoDuration = videoDuration;
+            NSAssert(NSThread.isMainThread, nil);
             completionHandler(image, error);
         }];
-    }];
+    }
 }
 
 - (void)loadVideoWithCompletionHandler:(MHGalleryItemLoadVideoCompletionHandler)completionHandler {
