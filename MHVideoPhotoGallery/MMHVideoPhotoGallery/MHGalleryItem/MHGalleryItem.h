@@ -26,6 +26,8 @@ typedef void(^MHGalleryItemLoadVideoCompletionHandler)(AVPlayerItem *playerItem,
 // this is the only acceptable method to create a gallery item
 + (instancetype)itemWithIdentifier:(NSString *)identifier type:(MHGalleryType)galleryType context:(NSString *)context;
 
+- (instancetype)initWithIdentifier:(NSString *)identifier type:(MHGalleryType)galleryType NS_DESIGNATED_INITIALIZER;
+
 @property (nonatomic, copy, readonly) NSString *identifier;
 
 // Subclasses should implement this. Default impl calls "loadImage" block.
